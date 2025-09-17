@@ -1,0 +1,30 @@
+{
+    "build": { "dockerfile": "Dockerfile" },
+
+    // "features": {
+    //     "ghcr.io/devcontainers/features/git:1": {
+    //         "version": "latest",
+    //         "ppa": "false"
+    //     }
+    // },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "theqtcompany.qt-core",
+                "theqtcompany.qt-cpp",
+                "theqtcompany.qt-qml",
+                "theqtcompany.qt-ui"
+            ]
+        }
+    },
+
+    // "containerUser": "egoss",
+    // "containerUser": "root" //,
+    // "remoteUser": "root"
+
+    // "postCreateCommand": "sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply mry792",
+    "postCreateCommand": ".devcontainer/setup.sh"
+}
