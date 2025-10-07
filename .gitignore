@@ -1,5 +1,8 @@
 # misc
 /bin
+/build
+/builds
+/.conan-cache
 
 # C++ objects and libs
 *.slo
