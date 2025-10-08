@@ -18,4 +18,4 @@ find_package(
 
 qt_standard_project_setup()
 
-add_subdirectory(src/widget-viewer-ex)
+add_subdirectory(qt-ex/widget-viewer)

@@ -1,7 +1,7 @@
-qt_add_executable(widget-viewer-ex main.cpp)
+qt_add_executable(widget-viewer main.cpp)
 
 target_sources(
-    widget-viewer-ex
+    widget-viewer
 
     PRIVATE
         MainWindow.cpp
@@ -18,7 +18,7 @@ target_sources(
 )
 
 target_link_libraries(
-    widget-viewer-ex
+    widget-viewer
     PRIVATE
         Qt6::Core
         Qt6::Gui
@@ -28,7 +28,7 @@ target_link_libraries(
 )
 
 qt_add_resources(
-    widget-viewer-ex
+    widget-viewer
     "resources"
     PREFIX /icons
     FILES
@@ -48,7 +48,7 @@ qt_add_resources(
 )
 
 install(
-    TARGETS widget-viewer-ex
+    TARGETS widget-viewer
     RUNTIME DESTINATION pdfwidgets/pdfviewer
     BUNDLE DESTINATION pdfwidgets/pdfviewer
     LIBRARY DESTINATION pdfwidgets/pdfviewer
