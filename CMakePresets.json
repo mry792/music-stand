@@ -1,0 +1,17 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "dev",
+            "binaryDir": "${sourceDir}/build/dev",
+            "cacheVariables": {
+                "Qt6_DIR": "/opt/qt/6.9.3/gcc_64/lib/cmake/Qt6"
+            }
+        }
+    ]
+}
