@@ -13,9 +13,12 @@ find_package(
         Gui
         Pdf
         PdfWidgets
+        Qml
+        Svg
         Widgets
 )
 
 qt_standard_project_setup()
 
+add_subdirectory(qt-ex/qml-single-page)
 add_subdirectory(qt-ex/widget-viewer)
