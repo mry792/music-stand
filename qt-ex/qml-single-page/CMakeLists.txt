@@ -3,15 +3,17 @@ qt_add_executable(qml-single-page main.cpp)
 target_link_libraries(
     qml-single-page
     PRIVATE
+        Qt::Core
         Qt::Gui
         Qt::Qml
 )
 
-qt_add_resources(
+qt_add_qml_module(
     qml-single-page
-    "viewer"
-    PREFIX "/singlepage"
-    FILES
+    URI singlepage
+    QML_FILES
+        viewer.qml
+    RESOURCES
         resources/document-open.svg
         resources/edit-clear.svg
         resources/edit-copy.svg
@@ -28,7 +30,6 @@ qt_add_resources(
         resources/zoom-in.svg
         resources/zoom-original.svg
         resources/zoom-out.svg
-        # viewer.qml
 )
 
 install(

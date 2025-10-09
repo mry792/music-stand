@@ -10,7 +10,9 @@
             "name": "dev",
             "binaryDir": "${sourceDir}/build/dev",
             "cacheVariables": {
-                "Qt6_DIR": "/opt/qt/6.9.3/gcc_64/lib/cmake/Qt6"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
+                "Qt6_DIR": "/opt/qt/6.9.3/gcc_64/lib/cmake/Qt6",
+                "QT_QML_GENERATE_QMLLS_INI": "ON"
             }
         }
     ]
