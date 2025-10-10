@@ -7,8 +7,8 @@
     },
     "configurePresets": [
         {
-            "name": "dev",
-            "binaryDir": "${sourceDir}/build/dev",
+            "name": "devc",
+            "binaryDir": "${sourceDir}/build/devc",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
                 "Qt6_DIR": "/opt/qt/6.9.3/gcc_64/lib/cmake/Qt6",
