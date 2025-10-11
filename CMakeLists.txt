@@ -16,6 +16,7 @@ find_package(
         Qml
         Svg
         Widgets
+        Xml
 )
 
 qt_standard_project_setup(REQUIRES 6.9)

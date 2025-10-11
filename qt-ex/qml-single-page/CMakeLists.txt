@@ -6,6 +6,7 @@ target_link_libraries(
         Qt::Core
         Qt::Gui
         Qt::Qml
+        Qt::Svg  # Needed to decode icon SVG files.
 )
 
 qt_add_qml_module(
