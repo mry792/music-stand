@@ -14,6 +14,14 @@
                 "Qt6_DIR": "/opt/qt/6.9.3/gcc_64/lib/cmake/Qt6",
                 "QT_QML_GENERATE_QMLLS_INI": "ON"
             }
+        },
+        {
+            "name": "qt-creator",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
+                "Qt6_DIR": "C:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6",
+                "QML_IMPORT_PATH": "C:/Qt/6.9.3/msvc2022_64/qml"
+            }
         }
     ]
 }
