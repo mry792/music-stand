@@ -12,9 +12,16 @@ target_link_libraries(
 qt_add_qml_module(
     qml-single-page
     URI singlepage
+    # RESOURCE_PREFIX /singlepage/
     QML_FILES
         viewer.qml
-    RESOURCES
+)
+
+qt_add_resources(
+    qml-single-page
+    "viewer"
+    PREFIX "/singlepage"
+    FILES
         resources/document-open.svg
         resources/edit-clear.svg
         resources/edit-copy.svg

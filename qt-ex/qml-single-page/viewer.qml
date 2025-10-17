@@ -1,3 +1,4 @@
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
@@ -21,10 +22,199 @@ ApplicationWindow {
             ToolButton {
                 action: Action {
                     shortcut: StandardKey.Open
-                    icon.source: "qrc:/qt/qml/singlepage/resources/document-open.svg"
+                    icon.source: "qrc:/singlepage/resources/document-open.svg"
                     onTriggered: fileDialog.open()
                 }
             }
+
+            /**
+             * zoom buttons
+             */
+
+            ToolButton {
+                action: Action {
+                    shortcut: StandardKey.ZoomIn
+                    enabled: view.sourceSize.width < 10000
+                    icon.source: "qrc:/singlepage/resources/zoom-in.svg"
+                    onTriggered: view.renderScale *= root.scaleStep
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    shortcut: StandardKey.ZoomOut
+                    enabled: view.sourceSize.width > 50
+                    icon.source: "qrc:/singlepage/resources/zoom-out.svg"
+                    onTriggered: view.renderScale /= root.scaleStep
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/zoom-fit-width.svg"
+                    onTriggered: view.scaleToWidth(root.contentItem.width, root.contentItem.height)
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/zoom-fit-best.svg"
+                    onTriggered: view.scaleToPage(root.contentItem.width, root.contentItem.height)
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    shortcut: "Ctrl+0"
+                    icon.source: "qrc:/singlepage/resources/zoom-original.svg"
+                    onTriggered: view.resetScale()
+                }
+            }
+
+            /**
+             * rotate buttons
+             */
+
+            ToolButton {
+                action: Action {
+                    shortcut: "Ctrl+L"
+                    icon.source: "qrc:/singlepage/resources/rotate-left.svg"
+                    onTriggered: view.pageRotation -= 90
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    shortcut: "Ctrl+R"
+                    icon.source: "qrc:/singlepage/resources/rotate-right.svg"
+                    onTriggered: view.pageRotation += 90
+                }
+            }
+
+            /**
+             * navigation
+             */
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/go-previous-view-page.svg"
+                    enabled: view.backEnabled
+                    onTriggered: view.back()
+                }
+                ToolTip.visible: enabled && hovered
+                ToolTip.delay: 2000
+                ToolTip.text: "go back"
+            }
+
+            SpinBox {
+                id: currentPageSB
+                from: 1
+                to: document.pageCount
+                editable: true
+                value: view.currentPage + 1
+                onValueModified: view.goToPage(value - 1)
+                Shortcut {
+                    sequence: StandardKey.MoveToPreviousPage
+                    onActivated: view.goToPage(currentPageSB.value - 2)
+                }
+                Shortcut {
+                    sequence: StandardKey.MoveToNextPage
+                    onActivated: view.goToPage(currentPageSB.value)
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/go-next-view-page.svg"
+                    enabled: view.forwardEnabled
+                    onTriggered: view.forward()
+                }
+                ToolTip.visible: enabled && hovered
+                ToolTip.delay: 2000
+                ToolTip.text: "go forward"
+            }
+
+            /**
+             * edit
+             */
+
+            ToolButton {
+                action: Action {
+                    shortcut: StandardKey.SelectAll
+                    icon.source: "qrc:/singlepage/resources/edit-select-all.svg"
+                    onTriggered: view.selectAll()
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    shortcut: StandardKey.Copy
+                    icon.source: "qrc:/singlepage/resources/edit-copy.svg"
+                    enabled: view.selectedText !== ""
+                    onTriggered: view.copySelectionToClipboard()
+                }
+            }
+
+            /**
+             * misc controls
+             */
+
+            Shortcut {
+                sequence: StandardKey.Find
+                onActivated: {
+                    searchField.forceActiveFocus()
+                    searchField.selectAll()
+                }
+            }
+
+            Shortcut {
+                sequence: StandardKey.Quit
+                onActivated: Qt.quit()
+            }
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Open a PDF file"
+        nameFilters: [ "PDF files (*.pdf)" ]
+        onAccepted: document.source = selectedFile
+    }
+
+    Dialog {
+        id: passwordDialog
+        title: "Password"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        anchors.centerIn: parent
+        width: 300
+
+        contentItem: TextField {
+            id: passwordField
+            placeholderText: qsTr("Please provide the password")
+            echoMode: TextInput.Password
+            width: parent.width
+            onAccepted: passwordDialog.accept()
+        }
+
+        onOpened: function () { passwordField.forceActiveFocus() }
+        onAccepted: document.password = passwordField.text
+    }
+
+    Dialog {
+        id: errorDialog
+        title: "Error loading " + document.source
+        standardButtons: Dialog.Close
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        anchors.centerIn: parent
+        width: 300
+        visible: document.status === PdfDocument.Error
+
+        contentItem: Label {
+            id: errorField
+            text: document.error
         }
     }
 
@@ -37,12 +227,145 @@ ApplicationWindow {
             source: Qt.resolvedUrl(root.source)
             onPasswordRequired: passwordDialog.open()
         }
+
+        searchString: searchField.text
     }
 
-    FileDialog {
-        id: fileDialog
-        title: "Open a PDF file"
-        nameFilters: [ "PDF files (*.pdf)" ]
-        onAccepted: document.source = selectedFile
+    Drawer {
+        id: searchDrawer
+        edge: Qt.LeftEdge
+
+        // Commented out as a workaround for QTBUG-83859
+        // modal: false
+        // dim: false
+
+        width: 300
+        y: root.header.height
+        height: view.height
+        clip: true
+
+        ListView {
+            id: searchResultsList
+            anchors.fill: parent
+            anchors.margins: 2
+            model: view.searchModel
+            currentIndex: view.searchModel.currentResult
+            ScrollBar.vertical: ScrollBar {}
+
+            delegate: ItemDelegate {
+                id: resultDelegate
+                required property int index
+                required property int page
+                required property string contextBefore
+                required property string contextAfter
+                width: parent ? parent.width : 0
+
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 0
+
+                    Label {
+                        text: "Page " + (resultDelegate.page + 1) + ": "
+                    }
+
+                    // pre-context
+                    Label {
+                        text: resultDelegate.contextBefore
+                        elide: Text.ElideLeft
+                        horizontalAlignment: Text.AlignRight
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: parent.width / 2
+                    }
+
+                    // search result
+                    Label {
+                        font.bold: true
+                        text: view.searchString
+                        width: implicitWidth  // What does this do?
+                    }
+
+                    // post-context
+                    Label {
+                        text: resultDelegate.contextAfter
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: parent.width / 2
+                    }
+                }
+
+                highlighted: ListView.isCurrentItem
+                onClicked: view.searchModel.currentResult = resultDelegate.index
+            }
+        }
+    }
+
+    footer: ToolBar {
+        height: footerRow.implicitHeight
+
+        RowLayout {
+            id: footerRow
+            anchors.fill: parent
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/go-up-search.svg"
+                    shortcut: StandardKey.FindPrevious
+                    enabled: view.searchModel.count > 0
+                    onTriggered: view.searchBack()
+                }
+
+                ToolTip.visible: enabled && hovered
+                ToolTip.delay: 2000
+                ToolTip.text: "find previous"
+            }
+
+            TextField {
+                id: searchField
+                placeholderText: "search"
+                Layout.minimumWidth: 150
+                Layout.maximumWidth: 300
+                Layout.fillWidth: true
+
+                onAccepted: searchDrawer.open()
+
+                Image {
+                    visible: searchField.text !== ""
+                    source: "qrc:/singlepage/resources/edit-clear.svg"
+                    anchors {
+                        right: parent.right
+                        top: parent.top
+                        bottom: parent.bottom
+                        margins: 3
+                        rightMargin: 5
+                    }
+                    TapHandler {
+                        onTapped: searchField.clear()
+                    }
+                }
+            }
+
+            ToolButton {
+                action: Action {
+                    icon.source: "qrc:/singlepage/resources/go-down-search.svg"
+                    shortcut: StandardKey.FindNext
+                    enabled: view.searchModel.count > 0
+                    onTriggered: view.searchForward()
+                }
+
+                ToolTip.visible: enabled && hovered
+                ToolTip.delay: 2000
+                ToolTip.text: "find next"
+            }
+
+            Label {
+                Layout.fillWidth: true
+                property size implicitPointSize: document.pagePointSize(view.currentPage)
+                text: "page " + (view.currentPage + 1) + " of " + document.pageCount +
+                      " scale " + view.renderScale.toFixed(2) +
+                      " original " + implicitPointSize.width.toFixed(1) + "x" +
+                      implicitPointSize.height.toFixed(1) + "pts"
+                visible: document.status === PdfDocument.Ready
+            }
+        }
     }
 }
