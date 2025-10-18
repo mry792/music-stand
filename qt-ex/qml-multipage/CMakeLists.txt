@@ -27,6 +27,13 @@ set_target_properties(
         AUTORCC ON
 )
 
+qt_add_qml_module(
+    qml-multipage
+    URI multipage
+    QML_FILES
+        viewer.qml
+)
+
 install(
     TARGETS qml-multipage
     RUNTIME DESTINATION pdf-qml/multipage
