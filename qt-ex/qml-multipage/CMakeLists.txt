@@ -1,6 +1,24 @@
 qt_add_executable(qml-multipage
     main.cpp
     viewer.qrc
+    PdfApplication.cpp
+)
+
+target_sources(
+    qml-multipage
+    PRIVATE
+        FILE_SET HEADERS
+        FILES
+            PdfApplication.hpp
+)
+
+target_link_libraries(
+    qml-multipage
+    PRIVATE
+        Qt::Core
+        Qt::Gui
+        Qt::Qml
+        Qt::Svg  # Needed to decode icon SVG files.
 )
 
 set_target_properties(
