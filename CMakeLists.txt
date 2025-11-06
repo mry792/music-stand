@@ -22,5 +22,6 @@ find_package(
 qt_standard_project_setup(REQUIRES 6.9)
 
 add_subdirectory(qt-ex/qml-multipage)
+add_subdirectory(qt-ex/qml-paint)
 add_subdirectory(qt-ex/qml-single-page)
 add_subdirectory(qt-ex/widget-viewer)
