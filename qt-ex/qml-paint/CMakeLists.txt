@@ -15,6 +15,7 @@ qt_add_qml_module(
     qml-paint
     URI paint
     QML_FILES
+        ColorSquare.qml
         viewer.qml
 )
 
